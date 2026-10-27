@@ -15,6 +15,16 @@ const taskSchema = new mongoose.Schema({
          enum : ['PENDING', 'IN_PROGRESS' ,'SUBMITTED','APPROVED','DONE' ],
          default : "PENDING"
     },
+    priority: {
+    type: String,
+    enum: ["LOW", "MEDIUM", "HIGH"],
+    default: "MEDIUM"
+},
+
+   estimatedHours: {
+    type: Number,
+    min: 0
+   },
     createdBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",

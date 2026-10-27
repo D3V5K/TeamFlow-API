@@ -7,57 +7,53 @@ const taskController = require("../controllers/taskController");
 const authMiddleware = require("../middlewares/authMiddleware");
 const authorization = require("../middlewares/authorize");
 
+// CREATE TASK
 router.post(
-  "/tasks",
+  "/",
   authMiddleware,
   authorization("ADMIN", "PROJECT_MANAGER", "TEAM_LEADER"),
   validate(taskSchema.createTaskSchema),
   taskController.createTask
 );
 
+// GET ALL TASKS (with query features)
 router.get(
-  "/tasks",
+  "/",
   authMiddleware,
-  authorization(
-        "ADMIN",
-        "PROJECT_MANAGER",
-        "TEAM_LEADER",
-        "DEVELOPER"
-    ),
+  authorization("ADMIN", "PROJECT_MANAGER", "TEAM_LEADER", "DEVELOPER"),
   validate(taskSchema.taskQuerySchema, "query"),
   taskController.getTasks
 );
 
+// GET TASK STATS (⚠️ يجب أن يكون قبل /:id!)
 router.get(
-  "/tasks/:id",
+  "/stats",
   authMiddleware,
-   authorization(
-        "ADMIN",
-        "PROJECT_MANAGER",
-        "TEAM_LEADER",
-        "DEVELOPER"
-    ),
+  taskController.getTaskStats
+);
+
+// GET TASK BY ID
+router.get(
+  "/:id",
+  authMiddleware,
+  authorization("ADMIN", "PROJECT_MANAGER", "TEAM_LEADER", "DEVELOPER"),
   taskController.getTaskById
 );
 
+// UPDATE TASK
 router.patch(
-  "/tasks/:id",
+  "/:id",
   authMiddleware,
-   authorization(
-        "ADMIN",
-        "PROJECT_MANAGER",
-        "TEAM_LEADER",
-        "DEVELOPER"
-    ),
+  authorization("ADMIN", "PROJECT_MANAGER", "TEAM_LEADER", "DEVELOPER"),
   validate(taskSchema.updateTaskSchema),
   taskController.updateTask
 );
 
+// DELETE TASK
 router.delete(
-  "/tasks/:id",
+  "/:id",
   authMiddleware,
-      authorization("ADMIN", "PROJECT_MANAGER"),
-
+  authorization("ADMIN", "PROJECT_MANAGER"),
   taskController.deleteTask
 );
 

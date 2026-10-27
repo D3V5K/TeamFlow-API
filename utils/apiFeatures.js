@@ -11,7 +11,8 @@ class APIFeatures {
             "page",
             "limit",
             "sort",
-            "fields"
+            "fields",
+            "search"
         ];
 
         excludedFields.forEach(

@@ -64,9 +64,23 @@ const deleteTask = asyncHandler(async (req, res) => {
     });
 });
 
+
+const getTaskStats = asyncHandler(async (req, res) => {
+
+    const stats = await taskService.getTaskStats(req.user.userId);
+
+    res.status(200).json({
+        status: "success",
+        message: "Task statistics fetched successfully",
+        stats
+    });
+
+});
+
 module.exports = {
     createTask ,
     getTasks,
+    getTaskStats,
     getTaskById,
     updateTask,
     deleteTask

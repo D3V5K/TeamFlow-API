@@ -1,6 +1,7 @@
 const Task = require("../models/Task");
 const APIFeatures = require("../utils/apiFeatures");
 const escapeRegex = require("../utils/escapeRegex");
+const mongoose = require("mongoose");
 class taskRepository {
     async create (data) {
         return await Task.create(data);
@@ -12,40 +13,18 @@ class taskRepository {
         createdBy: userId
     };
 
-    // Filtering
-    if (queryString.status) {
-        filter.status = queryString.status;
-    }
-
-    // Search
-    if (queryString.search) {
-        const safeSearch = escapeRegex(queryString.search);
-
-        filter.$or = [
-            {
-                title: {
-                    $regex: safeSearch,
-                    $options: "i"
-                }
-            },
-            {
-                description: {
-                    $regex: safeSearch,
-                    $options: "i"
-                }
-            }
-        ];
-    }
 
     const features = new APIFeatures(
-        Task.find(filter),
-        queryString
+    Task.find(filter),
+    queryString
     );
 
-    features
-        .sort()
-        .limitFields()
-        .paginate();
+features
+    .filter()
+    .search()
+    .sort()
+    .limitFields()
+    .paginate();
 
     const [tasks, total] = await Promise.all([
         features.query,
@@ -86,6 +65,34 @@ class taskRepository {
         createdBy: userId
     });
     }
+
+    // aggregate 
+
+  async getTaskStats(userId) {
+    return await Task.aggregate([
+        {
+            $match: {
+                createdBy: new mongoose.Types.ObjectId(userId)
+            }
+        },
+        {
+            $group: {
+                _id: "$status",
+                totalTasks: {
+                    $sum: 1
+                },
+                averageHours: {
+                    $avg: "$estimatedHours"
+                },
+                totalHours: {
+                    $sum: "$estimatedHours"
+                }
+            }
+        },
+       
+        
+    ]);
+ }
 
 }
 

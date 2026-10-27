@@ -10,13 +10,28 @@ const isValidObjectId = (id) => {
 const sanitizeTaskData = (taskData = {}) => {
     const allowedData = {};
 
-    if (taskData.title !== undefined) allowedData.title = taskData.title;
-    if (taskData.description !== undefined) allowedData.description = taskData.description;
-    if (taskData.status !== undefined) allowedData.status = taskData.status;
+    if (taskData.title !== undefined) {
+        allowedData.title = taskData.title;
+    }
+
+    if (taskData.description !== undefined) {
+        allowedData.description = taskData.description;
+    }
+
+    if (taskData.status !== undefined) {
+        allowedData.status = taskData.status;
+    }
+
+    if (taskData.priority !== undefined) {
+        allowedData.priority = taskData.priority;
+    }
+
+    if (taskData.estimatedHours !== undefined) {
+        allowedData.estimatedHours = taskData.estimatedHours;
+    }
 
     return allowedData;
 };
-
 const createTask = async (taskData, user) => {
     const allowedData = sanitizeTaskData(taskData);
 
@@ -97,10 +112,16 @@ const deleteTask = async (id, userId) => {
     return task;
 };
 
+const getTaskStats = async (userId) => {
+    return await taskRepositorie.getTaskStats(userId)
+}
+
 module.exports = {
     createTask,
     getTasks,
+    getTaskStats,
     getTaskById,
     updateTask,
-    deleteTask
+    deleteTask,
+  
 };
