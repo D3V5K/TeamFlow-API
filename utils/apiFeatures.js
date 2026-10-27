@@ -4,25 +4,23 @@ class APIFeatures {
         this.queryString = queryString;
     }
 
-    filter() {
-        const queryObj = { ...this.queryString };
+ filter() {
+    // 🔒 SECURITY: Whitelist the only fields users are allowed to filter by.
+    // Any other field, such as createdBy, password, or unexpected operators,
+    // should not be accepted as a client-controlled filter.
+    const allowedFilters = ["status", "priority", "estimatedHours"];
+    const queryObj = {};
 
-        const excludedFields = [
-            "page",
-            "limit",
-            "sort",
-            "fields",
-            "search"
-        ];
-
-        excludedFields.forEach(
-            field => delete queryObj[field]
-        );
-
-        this.query = this.query.find(queryObj);
-
-        return this;
+    // 🔁 Iterate over the allowed filter fields only.
+    for (const key of allowedFilters) {
+        if (this.queryString[key] !== undefined) {
+            queryObj[key] = this.queryString[key];
+        }
     }
+
+
+    return this;
+}
 
     search() {
         if (this.queryString.search) {

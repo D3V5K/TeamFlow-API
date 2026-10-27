@@ -8,35 +8,20 @@ class taskRepository {
     };
 
  async findAll(userId, queryString) {
+    const filter = { createdBy: userId };
 
-    const filter = {
-        createdBy: userId
-    };
+    const features = new APIFeatures(Task.find(filter), queryString)
+        .filter()
+        .search()
+        .sort()
+        .limitFields();
 
+    const total = await features.query.clone().countDocuments();
 
-    const features = new APIFeatures(
-    Task.find(filter),
-    queryString
-    );
+    const tasks = await features.paginate().query;
 
-features
-    .filter()
-    .search()
-    .sort()
-    .limitFields()
-    .paginate();
-
-    const [tasks, total] = await Promise.all([
-        features.query,
-        Task.countDocuments(filter)
-    ]);
-
-    return {
-        tasks,
-        total
-    };
+    return { tasks, total };
 }
-
     async findById(id, userId) {
     return await Task.findOne({
         _id: id,

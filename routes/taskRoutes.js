@@ -7,7 +7,6 @@ const taskController = require("../controllers/taskController");
 const authMiddleware = require("../middlewares/authMiddleware");
 const authorization = require("../middlewares/authorize");
 
-// CREATE TASK
 router.post(
   "/",
   authMiddleware,
@@ -16,7 +15,6 @@ router.post(
   taskController.createTask
 );
 
-// GET ALL TASKS (with query features)
 router.get(
   "/",
   authMiddleware,
@@ -25,14 +23,12 @@ router.get(
   taskController.getTasks
 );
 
-// GET TASK STATS (⚠️ يجب أن يكون قبل /:id!)
 router.get(
   "/stats",
   authMiddleware,
   taskController.getTaskStats
 );
 
-// GET TASK BY ID
 router.get(
   "/:id",
   authMiddleware,
@@ -40,7 +36,6 @@ router.get(
   taskController.getTaskById
 );
 
-// UPDATE TASK
 router.patch(
   "/:id",
   authMiddleware,
@@ -49,7 +44,6 @@ router.patch(
   taskController.updateTask
 );
 
-// DELETE TASK
 router.delete(
   "/:id",
   authMiddleware,
